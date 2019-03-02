@@ -1,4 +1,5 @@
 const mail = require('nodemailer')
+const ResponseModel = require('../model/ResponseModel')
 
 let mailOptions = {
     from: 'kritchat.r@gmail.com',                // sender
@@ -20,11 +21,12 @@ let transport = mail.createTransport({
 const sendEmail = (res) => transport.sendMail(mailOptions, (err, info)=>{
     if(err){
         console.log('Failed..'+ err)
-        return res.send(err)
+        res.send(new ResponseModel('0001','ERROR', err))
     }else{
         console.log('Success..'+ info)
-        return res.send(info)
+        res.send(new ResponseModel('0000','SUCCESS', info))
     }
+    return res
 })
 
 exports.send = sendEmail;
