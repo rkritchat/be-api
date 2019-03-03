@@ -4,35 +4,36 @@ const User = require('../model/UserModel')
 const ResponseModel = require('../model/ResponseModel')
 
 let execute = (req, res) =>{
-    let user = new User(req.body)
-    console.log("User is "+ User)
+    let userInfo
     try{
-        validateRequiredFiled(User);
-        validateDuplicateUser(User.user);
-        res.send(new ResponseModel('0000', 'Register Successfully', user))
+        userInfo = new Promise(new User(req.body)).then( 
+        console.log("====>" + userInfo.firstName),
+        validateRequiredFiled(userInfo),
+        validateDuplicateUser(userInfo.user),
+        res.send(new ResponseModel('0000', 'Register Successfully', userInfo)))
     }catch(e){
         console.log('Exception occur' + e)
-        res.send(new ResponseModel('0001', e, user))
+        res.send(new ResponseModel('0001', e, userInfo))
     }
     return res
 }
 
-function validateRequiredFiled(User){
-    if(stringUtils.isNull(User.firstName)){
+function validateRequiredFiled(userInfo){
+    if(stringUtils.isNull(userInfo.firstName)){
         throw exceptionConstant.NAME_IS_REQUIRED
-    }else if(stringUtils.isNull(User.lastName)){
+    }else if(stringUtils.isNull(userInfo.lastName)){
         throw exceptionConstant.LASTNAME_IS_REQUIRED
-    }else if(stringUtils.isNull(User.user)){
+    }else if(stringUtils.isNull(userInfo.user)){
         throw exceptionConstant.USERNAME_IS_REQUIRED
-    }else if(stringUtils.isNull(User.pwd)){
+    }else if(stringUtils.isNull(userInfo.pwd)){
         throw exceptionConstant.PASSWORD_IS_REQUIRED
-    }else if(stringUtils.isNull(User.email)){
+    }else if(stringUtils.isNull(userInfo.email)){
         throw exceptionConstant.EMAIL_IS_REQUIRED
     }
 }
 
 function validateDuplicateUser(username){
-
+    console.log('Username is ' + username)
 }
 
 exports.execute=execute;
