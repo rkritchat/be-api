@@ -7,4 +7,5 @@ const app = express()
 app.use(cors({origin:true}))
 app.use(routes)
 
+
 exports.sendMail = functions.https.onRequest(app)

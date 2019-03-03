@@ -2,23 +2,30 @@ const exceptionConstant = require('../constant/ExceptionConstant')
 const stringUtils = require('../utils/StringUtils')
 const User = require('../model/UserModel')
 const ResponseModel = require('../model/ResponseModel')
+const async = require('asyncawait')
+const await = require('asyncawait')
+const userDao = require('../dao/UserDao')
 
-let execute = (req, res) =>{
+let execute = async (req, res) =>{
     let userInfo
     try{
-        userInfo = new Promise(new User(req.body)).then( 
-        console.log("====>" + userInfo.firstName),
-        validateRequiredFiled(userInfo),
-        validateDuplicateUser(userInfo.user),
-        res.send(new ResponseModel('0000', 'Register Successfully', userInfo)))
+        await new Promise((resolve, reject) => resolve(iniUserInfo(req))).then(e=>{userInfo = e})
+        await validateRequiredFiled(userInfo)
+        await validateDuplicateUser(userInfo.user)
+        await userDao.createUser(userInfo)
+        res.send(new ResponseModel('0000', 'Register Successfully', userInfo))
     }catch(e){
-        console.log('Exception occur' + e)
+        console.log('Exception occur ===>> ' + e)
         res.send(new ResponseModel('0001', e, userInfo))
     }
     return res
 }
 
-function validateRequiredFiled(userInfo){
+async function iniUserInfo(req){
+    return new User(req.body)
+}
+
+async function validateRequiredFiled(userInfo){
     if(stringUtils.isNull(userInfo.firstName)){
         throw exceptionConstant.NAME_IS_REQUIRED
     }else if(stringUtils.isNull(userInfo.lastName)){
@@ -32,7 +39,7 @@ function validateRequiredFiled(userInfo){
     }
 }
 
-function validateDuplicateUser(username){
+async function validateDuplicateUser(username){
     console.log('Username is ' + username)
 }
 
