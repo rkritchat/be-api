@@ -11,7 +11,7 @@ let execute = async (req, res) =>{
     try{
         await new Promise((resolve, reject) => resolve(iniUserInfo(req))).then(e=>{userInfo = e})
         await validateRequiredFiled(userInfo)
-        await validateDuplicateUser(userInfo.user)
+        //await userDao.validateUsername(userInfo.user)
         await userDao.createUser(userInfo)
         res.send(new ResponseModel('0000', 'Register Successfully', userInfo))
     }catch(e){
@@ -37,10 +37,6 @@ async function validateRequiredFiled(userInfo){
     }else if(stringUtils.isNull(userInfo.email)){
         throw exceptionConstant.EMAIL_IS_REQUIRED
     }
-}
-
-async function validateDuplicateUser(username){
-    console.log('Username is ' + username)
 }
 
 exports.execute=execute;

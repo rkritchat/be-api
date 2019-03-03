@@ -19,8 +19,13 @@ module.exports = {
     },
 
     validateUsername: async (username)=>{
-        admin.database().ref('/users').on(username, (r,e)=>{
-            
+        console.log("QUERY" + username)
+        admin.database().ref('/users').child(username).on("value",(snapshot)=>{
+           console.log(snapshot.val())  
+           if(snapshot.val()!=null){
+               throw 'Username already exist.'
+           }
         })
+             
     }
 }
